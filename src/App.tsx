@@ -85,6 +85,12 @@ function App() {
     return new Date(session.startedAt).toDateString() === new Date().toDateString()
   })
 
+  // total practiced time today
+  const totalSecondsToday = sessionsToday.reduce(
+    (sum, session) => sum + session.durationSec,
+    0
+  )
+
 
 
   // some jsx shit
@@ -95,6 +101,7 @@ function App() {
       {activeTab === "today" && (
         <div>
           <h2>Today</h2>
+          <p>total practice today: {formatHMS(totalSecondsToday)}</p>
 
           {!activeSession && (
             <div>
@@ -129,11 +136,17 @@ function App() {
             <p>why haven't you practiced yet</p>
           )}
 
-          {sessionsToday.map(session => (
-            <div key={session.id}>
-              {session.piece} — {session.goal} — {formatHMS(session.durationSec)}
-            </div>
-          ))}
+          {sessionsToday.length > 0 && (
+            <ul>
+              {sessionsToday.map((session) => (
+                <li key={session.id}>
+                  <strong>{session.piece}</strong> — {session.goal} — {" "}
+                  {formatHMS(session.durationSec)}
+                </li>
+              ))}
+            </ul>
+          )}
+
         </div>
       )}
 
