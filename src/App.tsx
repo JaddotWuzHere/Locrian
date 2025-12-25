@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
+import "./App.css"
 
 function App() {
   const [activeTab, setActiveTab] =
     useState<"today" | "history" | "insights">("today")
 
   const [pieceName, setPieceName] = useState("")
-  const [goal, setGoal] = useState("Technique")
+  const [goal, setGoal] = useState("technique")
 
-  // null if no active session
   const [activeSession, setActiveSession] =
     useState<null | { startedAt: number; piece: string; goal: string }>(null)
 
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
+
+  const [sessions, setSessions] = useState<any[]>([])
 
   // timer
   useEffect(() => {
@@ -24,6 +26,7 @@ function App() {
     return () => clearInterval(interval)
   }, [activeSession])
 
+  // start session
   function startSession() {
     if (!pieceName.trim()) {
       alert("Enter piece name plz")
@@ -38,16 +41,53 @@ function App() {
     setElapsedSeconds(0)
   }
 
+  // stop session and store session
   function stopSession() {
+    if (!activeSession) return 
+
+    const newSession = {
+      id: Date.now(),
+      piece: activeSession.piece,
+      goal: activeSession.goal,
+      startedAt: activeSession.startedAt,
+      durationSec: elapsedSeconds,
+    }
+
+    setSessions((oldSessions) => [...oldSessions, newSession])
+
     setActiveSession(null)
+    setElapsedSeconds(0)
   }
 
+  // timer formatting
   function formatTime(s: number) {
     const m = Math.floor(s / 60)
+    const h = Math.floor(m / 60)
     const sec = s % 60
-    return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`
+    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`
   }
 
+  // more formatting but for the RECORDED SESS'S INSTEAD 
+  function formatHMS(totalSeconds: number) {
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+
+    const hh = hours.toString().padStart(2, "0")
+    const mm = minutes.toString().padStart(2, "0")
+    const ss = seconds.toString().padStart(2, "0")
+
+    return `${hh}:${mm}:${ss}`
+  }
+
+  // list of all sessions today
+  const sessionsToday = sessions.filter(session => {
+    return new Date(session.startedAt).toDateString() === new Date().toDateString()
+  })
+
+
+
+  // some jsx shit
   return (
     <div style={{ paddingBottom: "60px" }}>
       <h1>Locrian</h1>
@@ -82,6 +122,18 @@ function App() {
               <button onClick={stopSession}>Stop session</button>
             </div>
           )}
+
+          <h3>Today's Sessions</h3>
+
+          {sessionsToday.length === 0 && (
+            <p>why haven't you practiced yet</p>
+          )}
+
+          {sessionsToday.map(session => (
+            <div key={session.id}>
+              {session.piece} — {session.goal} — {formatHMS(session.durationSec)}
+            </div>
+          ))}
         </div>
       )}
 
