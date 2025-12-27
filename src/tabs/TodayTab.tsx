@@ -14,6 +14,7 @@ export type TodayTabProps = {
   formatHMS: (seconds: number) => string
   pieces: Piece[]
   onManagePiecesClick: () => void
+  deleteSession: (id: number) => void
 }
 
 export default function TodayTab({
@@ -30,6 +31,7 @@ export default function TodayTab({
   formatHMS,
   pieces,
   onManagePiecesClick,
+  deleteSession,
 }: TodayTabProps) {
   return (
     <div>
@@ -92,7 +94,16 @@ export default function TodayTab({
           {sessionsToday.map((session) => (
             <li key={session.id}>
               <strong>{session.piece}</strong> — {session.goal} —{" "}
-              {formatHMS(session.durationSec)}
+              {formatHMS(session.durationSec)}{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  const ok = window.confirm("delete this session?")
+                  if (ok) deleteSession(session.id)
+                }}
+              >
+                delete
+              </button>
             </li>
           ))}
         </ul>

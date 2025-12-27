@@ -4,12 +4,14 @@ type HistoryTabProps = {
   sortedDateKeys: string[]
   sessionsByDate: Record<string, PracticeSession[]>
   formatHMS: (seconds: number) => string
+  deleteSession: (id: number) => void
 }
 
 export default function HistoryTab({
   sortedDateKeys,
   sessionsByDate,
   formatHMS,
+  deleteSession,
 }: HistoryTabProps) {
   return (
     <div>
@@ -42,7 +44,16 @@ export default function HistoryTab({
               {daySessions.map((session) => (
                 <li key={session.id}>
                   <strong>{session.piece}</strong> — {session.goal} —{" "}
-                  {formatHMS(session.durationSec)}
+                  {formatHMS(session.durationSec)}{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const ok = window.confirm("delete this session?")
+                      if (ok) deleteSession(session.id)
+                    }}
+                  >
+                    delete
+                  </button>
                 </li>
               ))}
             </ul>

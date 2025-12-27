@@ -157,6 +157,11 @@ function App() {
     setShowPiecesManager(true)
   }
 
+  // -------- remove sessions --------
+  function deleteSession(id: number) {
+    setSessions((allSessions) => allSessions.filter((s) => s.id !== id))
+  }
+
   // -------- some basic insights stuff, past 30 days --------
   const INSIGHTS_DAYS = 30
   const now = Date.now()
@@ -199,6 +204,7 @@ function App() {
           formatHMS={formatHMS}
           pieces={pieces}
           onManagePiecesClick={() => setShowPiecesManager(true)}
+          deleteSession={deleteSession}
         />
       )}
 
@@ -207,6 +213,7 @@ function App() {
           sortedDateKeys={sortedDateKeys}
           sessionsByDate={sessionsByDate}
           formatHMS={formatHMS}
+          deleteSession={deleteSession}
         />
       )}
 
