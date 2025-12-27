@@ -86,15 +86,7 @@ function App() {
     setElapsedSeconds(0)
   }
 
-  // timer formatting
-  function formatTime(s: number) {
-    const m = Math.floor(s / 60)
-    const h = Math.floor(m / 60)
-    const sec = s % 60
-    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`
-  }
-
-  // more formatting but for the RECORDED SESS'S INSTEAD 
+  // time formatting
   function formatHMS(totalSeconds: number) {
     const hours = Math.floor(totalSeconds / 3600)
     const minutes = Math.floor((totalSeconds % 3600) / 60)
@@ -107,10 +99,40 @@ function App() {
     return `${hh}:${mm}:${ss}`
   }
 
+  // date formatting
+  function formatDate(ts: number) {
+    // 12/26/2025 type shit
+    const d = new Date(ts)
+
+    const mm = String(d.getMonth() + 1).padStart(2, "0")
+    const dd = String(d.getDate()).padStart(2, "0")
+    const yyyy = d.getFullYear()
+
+    return `${mm}/${dd}/${yyyy}`
+  }
+
+  // group sessions by date
+  const sessionsByDate = sessions.reduce((acc: Record<string, any[]>, session) => {
+    const date = formatDate(session.startedAt)
+
+    if (!acc[date]) {
+      acc[date] = []
+    }
+    acc[date].push(session)
+
+    return acc
+  }, {} as Record<string, any[]>)
+
+  const sortedDateKeys = Object.keys(sessionsByDate).sort((a, b) =>
+    a < b ? 1 : -1
+  )
+
+  const todayKey = formatDate(Date.now())
+
   // list of all sessions today
-  const sessionsToday = sessions.filter(session => {
-    return new Date(session.startedAt).toDateString() === new Date().toDateString()
-  })
+  const sessionsToday = sessions.filter(
+    (session) => formatDate(session.startedAt) === todayKey
+  )
 
   // total practiced time today
   const totalSecondsToday = sessionsToday.reduce(
@@ -149,7 +171,7 @@ function App() {
               <p>
                 Practicing: <strong>{activeSession.piece}</strong> ({activeSession.goal})
               </p>
-              <h3>{formatTime(elapsedSeconds)}</h3>
+              <h3>{formatHMS(elapsedSeconds)}</h3>
 
               <button onClick={stopSession}>Stop session</button>
             </div>
@@ -175,7 +197,46 @@ function App() {
         </div>
       )}
 
-      {activeTab === "history" && <h2>History</h2>}
+      {activeTab === "history" && (
+        <div>
+          <h2>History</h2>
+
+          {sortedDateKeys.length === 0 && <p>No sessions yet shawty</p>}
+
+          {sortedDateKeys.map((dateKey) => {
+            const daySessions = sessionsByDate[dateKey]
+            const totalForDay = daySessions.reduce(
+              (sum, session) => sum + session.durationSec,
+              0
+            )
+
+            const dateLabel = new Date(dateKey).toLocaleDateString(undefined, {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+
+            return (
+              <div key={dateKey} style={{ marginBottom: "1.5rem" }}>
+                <h3>
+                  {dateLabel} — {formatHMS(totalForDay)}
+                </h3>
+
+                <ul>
+                  {daySessions.map((session) => (
+                    <li key={session.id}>
+                      <strong>{session.piece}</strong> — {session.goal} —{" "}
+                      {formatHMS(session.durationSec)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       {activeTab === "insights" && <h2>Insights</h2>}
 
       <div
