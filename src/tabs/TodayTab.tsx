@@ -1,10 +1,4 @@
-export type PracticeSession = {
-  id: number
-  piece: string
-  goal: string
-  startedAt: number
-  durationSec: number
-}
+import type { PracticeSession, Piece } from "../types"
 
 export type TodayTabProps = {
   pieceName: string
@@ -18,6 +12,8 @@ export type TodayTabProps = {
   sessionsToday: PracticeSession[]
   totalSecondsToday: number
   formatHMS: (seconds: number) => string
+  pieces: Piece[]
+  onManagePiecesClick: () => void
 }
 
 export default function TodayTab({
@@ -32,6 +28,8 @@ export default function TodayTab({
   sessionsToday,
   totalSecondsToday,
   formatHMS,
+  pieces,
+  onManagePiecesClick,
 }: TodayTabProps) {
   return (
     <div>
@@ -41,11 +39,26 @@ export default function TodayTab({
 
       {!activeSession && (
         <div>
-          <input
-            placeholder="piece name"
+          <select
             value={pieceName}
             onChange={(e) => setPieceName(e.target.value)}
-          />
+          >
+            <option value="">select a piece...</option>
+
+            {pieces.map((piece) => {
+              const label = `${piece.composer} — ${piece.title}`
+
+              return (
+                <option key={piece.id} value={label}>
+                  {label}
+                </option>
+              )
+            })}
+          </select>
+
+          <button type="button" onClick={onManagePiecesClick}>
+            manage pieces
+          </button>
 
           <select value={goal} onChange={(e) => setGoal(e.target.value)}>
             <option>technique</option>

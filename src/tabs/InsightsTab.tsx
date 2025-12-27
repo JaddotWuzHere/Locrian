@@ -1,7 +1,4 @@
-export type PieceTotal = {
-  piece: string
-  totalSeconds: number
-}
+import type { PieceTotal } from "../types"
 
 type InsightsTabProps = {
   insightsDays: number

@@ -1,4 +1,4 @@
-import type { PracticeSession } from "./TodayTab"
+import type { PracticeSession } from "../types"
 
 type HistoryTabProps = {
   sortedDateKeys: string[]

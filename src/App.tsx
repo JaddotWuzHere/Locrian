@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react"
 import "./App.css"
-import TodayTab from "./components/TodayTab"
-import type { PracticeSession } from "./components/TodayTab"
-import HistoryTab from "./components/HistoryTab"
-import InsightsTab from "./components/InsightsTab"
+
+import TodayTab from "./tabs/TodayTab"
+import HistoryTab from "./tabs/HistoryTab"
+import InsightsTab from "./tabs/InsightsTab"
+
+import PiecesManager from "./components/PiecesManager"
+
+import type { PracticeSession, Piece } from "./types"
+
 
 function App() {
   const [activeTab, setActiveTab] =
@@ -11,6 +16,9 @@ function App() {
 
   const [pieceName, setPieceName] = useState("")
   const [goal, setGoal] = useState("technique")
+
+  const [pieces, setPieces] = useState<Piece[]>([])
+  const [showPiecesManager, setShowPiecesManager] = useState(false)
 
   const [activeSession, setActiveSession] =
     useState<null | { startedAt: number; piece: string; goal: string }>(null)
@@ -111,6 +119,8 @@ function App() {
     return `${mm}/${dd}/${yyyy}`
   }
 
+
+  
   // -------- group sessions by date --------
   const sessionsByDate = sessions.reduce(
     (acc: Record<string, PracticeSession[]>, session) => {
@@ -141,6 +151,11 @@ function App() {
     (sum, session) => sum + session.durationSec,
     0
   )
+
+  // -------- pieces manager open --------
+  function handleManagePiecesClick() {
+    setShowPiecesManager(true)
+  }
 
   // -------- some basic insights stuff, past 30 days --------
   const INSIGHTS_DAYS = 30
@@ -182,6 +197,8 @@ function App() {
           sessionsToday={sessionsToday}
           totalSecondsToday={totalSecondsToday}
           formatHMS={formatHMS}
+          pieces={pieces}
+          onManagePiecesClick={() => setShowPiecesManager(true)}
         />
       )}
 
@@ -218,6 +235,14 @@ function App() {
         <button onClick={() => setActiveTab("history")}>History</button>
         <button onClick={() => setActiveTab("insights")}>Insights</button>
       </div>
+
+      {showPiecesManager && (
+        <PiecesManager
+          pieces={pieces}
+          setPieces={setPieces}
+          onClose={() => setShowPiecesManager(false)}
+        />
+      )}
     </div>
   )
 }
