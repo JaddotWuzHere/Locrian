@@ -13,7 +13,34 @@ function App() {
 
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
 
+  const [loaded, setLoaded] = useState(false)
   const [sessions, setSessions] = useState<any[]>([])
+
+  // local storage
+  useEffect(() => {
+    const saved = localStorage.getItem("locrian.sessions")
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed)) {
+          setSessions(parsed)
+        }
+      } catch (e) {
+        console.error("failed to parse saved sessions", e)
+      }
+    }
+
+    setLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (!loaded) {
+      return
+    }
+    localStorage.setItem("locrian.sessions", JSON.stringify(sessions))
+  }, [sessions, loaded])
+
 
   // timer
   useEffect(() => {
@@ -90,8 +117,6 @@ function App() {
     (sum, session) => sum + session.durationSec,
     0
   )
-
-
 
   // some jsx shit
   return (
