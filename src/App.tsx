@@ -1,5 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import "./App.css"
+import TodayTab from "./components/TodayTab"
+import type { PracticeSession } from "./components/TodayTab"
+import HistoryTab from "./components/HistoryTab"
+import InsightsTab from "./components/InsightsTab"
 
 function App() {
   const [activeTab, setActiveTab] =
@@ -14,9 +18,9 @@ function App() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
 
   const [loaded, setLoaded] = useState(false)
-  const [sessions, setSessions] = useState<any[]>([])
+  const [sessions, setSessions] = useState<PracticeSession[]>([])
 
-  // local storage
+  // -------- local storage shit idk --------
   useEffect(() => {
     const saved = localStorage.getItem("locrian.sessions")
 
@@ -35,25 +39,24 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!loaded) {
-      return
-    }
+    if (!loaded) return
     localStorage.setItem("locrian.sessions", JSON.stringify(sessions))
   }, [sessions, loaded])
 
-
-  // timer
+  // -------- timer effect --------
   useEffect(() => {
     if (!activeSession) return
 
     const interval = setInterval(() => {
-      setElapsedSeconds(Math.floor((Date.now() - activeSession.startedAt) / 1000))
+      setElapsedSeconds(
+        Math.floor((Date.now() - activeSession.startedAt) / 1000)
+      )
     }, 1000)
 
     return () => clearInterval(interval)
   }, [activeSession])
 
-  // start session
+  // -------- actions --------
   function startSession() {
     if (!pieceName.trim()) {
       alert("Enter piece name plz")
@@ -68,11 +71,10 @@ function App() {
     setElapsedSeconds(0)
   }
 
-  // stop session and store session
   function stopSession() {
-    if (!activeSession) return 
+    if (!activeSession) return
 
-    const newSession = {
+    const newSession: PracticeSession = {
       id: Date.now(),
       piece: activeSession.piece,
       goal: activeSession.goal,
@@ -86,7 +88,7 @@ function App() {
     setElapsedSeconds(0)
   }
 
-  // time formatting
+  // -------- format TIME --------
   function formatHMS(totalSeconds: number) {
     const hours = Math.floor(totalSeconds / 3600)
     const minutes = Math.floor((totalSeconds % 3600) / 60)
@@ -99,9 +101,7 @@ function App() {
     return `${hh}:${mm}:${ss}`
   }
 
-  // date formatting
   function formatDate(ts: number) {
-    // 12/26/2025 type shit
     const d = new Date(ts)
 
     const mm = String(d.getMonth() + 1).padStart(2, "0")
@@ -111,133 +111,95 @@ function App() {
     return `${mm}/${dd}/${yyyy}`
   }
 
-  // group sessions by date
-  const sessionsByDate = sessions.reduce((acc: Record<string, any[]>, session) => {
-    const date = formatDate(session.startedAt)
+  // -------- group sessions by date --------
+  const sessionsByDate = sessions.reduce(
+    (acc: Record<string, PracticeSession[]>, session) => {
+      const date = formatDate(session.startedAt)
 
-    if (!acc[date]) {
-      acc[date] = []
-    }
-    acc[date].push(session)
+      if (!acc[date]) {
+        acc[date] = []
+      }
+      acc[date].push(session)
 
-    return acc
-  }, {} as Record<string, any[]>)
+      return acc
+    },
+    {} as Record<string, PracticeSession[]>
+  )
 
   const sortedDateKeys = Object.keys(sessionsByDate).sort((a, b) =>
     a < b ? 1 : -1
   )
 
+  // -------- today's sessions wahoo --------
   const todayKey = formatDate(Date.now())
 
-  // list of all sessions today
   const sessionsToday = sessions.filter(
     (session) => formatDate(session.startedAt) === todayKey
   )
 
-  // total practiced time today
   const totalSecondsToday = sessionsToday.reduce(
     (sum, session) => sum + session.durationSec,
     0
   )
 
-  // some jsx shit
+  // -------- some basic insights stuff, past 30 days --------
+  const INSIGHTS_DAYS = 30
+  const now = Date.now()
+  const cutoffMs = now - INSIGHTS_DAYS * 24 * 60 * 60 * 1000
+
+  const recentSessions = sessions.filter(
+    (session) => session.startedAt >= cutoffMs
+  )
+
+  const totalSecondsPiece = recentSessions.reduce(
+    (acc: Record<string, number>, session) => {
+      const piece = session.piece || "(untitled)"
+      acc[piece] = (acc[piece] || 0) + session.durationSec
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
+  const pieceTotals = Object.entries(totalSecondsPiece)
+    .map(([piece, totalSeconds]) => ({ piece, totalSeconds }))
+    .sort((a, b) => b.totalSeconds - a.totalSeconds)
+
+  // -------- JSX SHIT AHHHHH --------
   return (
     <div style={{ paddingBottom: "60px" }}>
       <h1>Locrian</h1>
 
       {activeTab === "today" && (
-        <div>
-          <h2>Today</h2>
-          <p>total practice today: {formatHMS(totalSecondsToday)}</p>
-
-          {!activeSession && (
-            <div>
-              <input
-                placeholder="piece name"
-                value={pieceName}
-                onChange={(e) => setPieceName(e.target.value)}
-              />
-              <select value={goal} onChange={(e) => setGoal(e.target.value)}>
-                <option>technique</option>
-                <option>phrasing</option>
-              </select>
-
-              <button onClick={startSession}>Start session</button>
-            </div>
-          )}
-
-          {activeSession && (
-            <div>
-              <p>
-                Practicing: <strong>{activeSession.piece}</strong> ({activeSession.goal})
-              </p>
-              <h3>{formatHMS(elapsedSeconds)}</h3>
-
-              <button onClick={stopSession}>Stop session</button>
-            </div>
-          )}
-
-          <h3>Today's Sessions</h3>
-
-          {sessionsToday.length === 0 && (
-            <p>why haven't you practiced yet</p>
-          )}
-
-          {sessionsToday.length > 0 && (
-            <ul>
-              {sessionsToday.map((session) => (
-                <li key={session.id}>
-                  <strong>{session.piece}</strong> — {session.goal} — {" "}
-                  {formatHMS(session.durationSec)}
-                </li>
-              ))}
-            </ul>
-          )}
-
-        </div>
+        <TodayTab
+          pieceName={pieceName}
+          setPieceName={setPieceName}
+          goal={goal}
+          setGoal={setGoal}
+          activeSession={activeSession}
+          elapsedSeconds={elapsedSeconds}
+          startSession={startSession}
+          stopSession={stopSession}
+          sessionsToday={sessionsToday}
+          totalSecondsToday={totalSecondsToday}
+          formatHMS={formatHMS}
+        />
       )}
 
       {activeTab === "history" && (
-        <div>
-          <h2>History</h2>
-
-          {sortedDateKeys.length === 0 && <p>No sessions yet shawty</p>}
-
-          {sortedDateKeys.map((dateKey) => {
-            const daySessions = sessionsByDate[dateKey]
-            const totalForDay = daySessions.reduce(
-              (sum, session) => sum + session.durationSec,
-              0
-            )
-
-            const dateLabel = new Date(dateKey).toLocaleDateString(undefined, {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
-
-            return (
-              <div key={dateKey} style={{ marginBottom: "1.5rem" }}>
-                <h3>
-                  {dateLabel} — {formatHMS(totalForDay)}
-                </h3>
-
-                <ul>
-                  {daySessions.map((session) => (
-                    <li key={session.id}>
-                      <strong>{session.piece}</strong> — {session.goal} —{" "}
-                      {formatHMS(session.durationSec)}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          })}
-        </div>
+        <HistoryTab
+          sortedDateKeys={sortedDateKeys}
+          sessionsByDate={sessionsByDate}
+          formatHMS={formatHMS}
+        />
       )}
 
-      {activeTab === "insights" && <h2>Insights</h2>}
+      {activeTab === "insights" && (
+        <InsightsTab
+          insightsDays={INSIGHTS_DAYS}
+          pieceTotals={pieceTotals}
+          formatHMS={formatHMS}
+        />
+      )}
 
       <div
         style={{
