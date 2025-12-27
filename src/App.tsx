@@ -30,16 +30,28 @@ function App() {
 
   // -------- local storage shit idk --------
   useEffect(() => {
-    const saved = localStorage.getItem("locrian.sessions")
+    const savedSessions = localStorage.getItem("locrian.sessions")
+    const savedPieces = localStorage.getItem("locrian.pieces")
 
-    if (saved) {
+    if (savedSessions) {
       try {
-        const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed)) {
-          setSessions(parsed)
+        const parsedSessions = JSON.parse(savedSessions)
+        if (Array.isArray(parsedSessions)) {
+          setSessions(parsedSessions)
         }
       } catch (e) {
         console.error("failed to parse saved sessions", e)
+      }
+    }
+
+    if (savedPieces) {
+      try {
+        const parsedPieces = JSON.parse(savedPieces)
+        if (Array.isArray(parsedPieces)) {
+          setPieces(parsedPieces)
+        }
+      } catch (e) {
+        console.error("failed to parse saved pieces", e)
       }
     }
 
@@ -49,7 +61,8 @@ function App() {
   useEffect(() => {
     if (!loaded) return
     localStorage.setItem("locrian.sessions", JSON.stringify(sessions))
-  }, [sessions, loaded])
+    localStorage.setItem("locrian.pieces", JSON.stringify(pieces))
+  }, [sessions, pieces, loaded])
 
   // -------- timer effect --------
   useEffect(() => {
