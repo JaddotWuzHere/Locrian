@@ -1,10 +1,11 @@
-import type { PracticeSession } from "../types"
+import type { PracticeSession, Piece } from "../types"
 
 type HistoryTabProps = {
   sortedDateKeys: string[]
   sessionsByDate: Record<string, PracticeSession[]>
   formatHMS: (seconds: number) => string
   deleteSession: (id: number) => void
+  pieces: Piece[]
 }
 
 export default function HistoryTab({
@@ -12,6 +13,7 @@ export default function HistoryTab({
   sessionsByDate,
   formatHMS,
   deleteSession,
+  pieces,
 }: HistoryTabProps) {
   return (
     <div>
@@ -24,7 +26,7 @@ export default function HistoryTab({
 
         const totalForDay = daySessions.reduce(
           (sum, session) => sum + session.durationSec,
-          0
+          0,
         )
 
         const dateLabel = new Date(dateKey).toLocaleDateString(undefined, {
@@ -41,21 +43,32 @@ export default function HistoryTab({
             </h3>
 
             <ul>
-              {daySessions.map((session) => (
-                <li key={session.id}>
-                  <strong>{session.piece}</strong> — {session.goal} —{" "}
-                  {formatHMS(session.durationSec)}{" "}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const ok = window.confirm("delete this session?")
-                      if (ok) deleteSession(session.id)
-                    }}
-                  >
-                    delete
-                  </button>
-                </li>
-              ))}
+              {daySessions.map((session) => {
+                const piece = pieces.find(
+                  (p) => p.id === session.pieceId,
+                )
+                const label = piece
+                  ? `${piece.composer} — ${piece.title}`
+                  : "Unknown piece"
+
+                return (
+                  <li key={session.id}>
+                    <strong>{label}</strong> — {session.goal} —{" "}
+                    {formatHMS(session.durationSec)}{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const ok = window.confirm(
+                          "delete this session?",
+                        )
+                        if (ok) deleteSession(session.id)
+                      }}
+                    >
+                      delete
+                    </button>
+                  </li>
+                )
+              })}
             </ul>
           </div>
         )

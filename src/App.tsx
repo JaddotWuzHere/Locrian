@@ -238,6 +238,7 @@ function App() {
           sessionsByDate={sessionsByDate}
           formatHMS={formatHMS}
           deleteSession={deleteSession}
+          pieces={pieces}
         />
       )}
 
