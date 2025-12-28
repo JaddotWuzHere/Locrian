@@ -1,6 +1,6 @@
 export type PracticeSession = {
   id: number
-  piece: string
+  pieceId: number
   goal: string
   startedAt: number
   durationSec: number

@@ -14,14 +14,17 @@ function App() {
   const [activeTab, setActiveTab] =
     useState<"today" | "history" | "insights">("today")
 
-  const [pieceName, setPieceName] = useState("")
+  const [selectedPieceId, setSelectedPieceId] = useState<number | "">("")
   const [goal, setGoal] = useState("technique")
 
   const [pieces, setPieces] = useState<Piece[]>([])
   const [showPiecesManager, setShowPiecesManager] = useState(false)
 
-  const [activeSession, setActiveSession] =
-    useState<null | { startedAt: number; piece: string; goal: string }>(null)
+  const [activeSession, setActiveSession] = useState<{
+    startedAt: number
+    pieceId: number
+    goal: string
+  } | null>(null)
 
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
 
@@ -79,17 +82,20 @@ function App() {
 
   // -------- actions --------
   function startSession() {
-    if (!pieceName.trim()) {
-      alert("Enter piece name plz")
+    if (selectedPieceId === "") {
+      alert("select a piece first")
       return
     }
 
+    if (activeSession) return
+
+    const startedAt = Date.now()
+
     setActiveSession({
-      startedAt: Date.now(),
-      piece: pieceName,
+      startedAt,
+      pieceId: selectedPieceId,
       goal,
     })
-    setElapsedSeconds(0)
   }
 
   function stopSession() {
@@ -97,7 +103,7 @@ function App() {
 
     const newSession: PracticeSession = {
       id: Date.now(),
-      piece: activeSession.piece,
+      pieceId: activeSession.pieceId,
       goal: activeSession.goal,
       startedAt: activeSession.startedAt,
       durationSec: elapsedSeconds,
@@ -186,7 +192,12 @@ function App() {
 
   const totalSecondsPiece = recentSessions.reduce(
     (acc: Record<string, number>, session) => {
-      const piece = session.piece || "(untitled)"
+      const pieceObj = pieces.find((p) => p.id === session.pieceId)
+
+      const piece = pieceObj
+        ? `${pieceObj.composer} — ${pieceObj.title}`
+        : " (unknown piece)"
+
       acc[piece] = (acc[piece] || 0) + session.durationSec
       return acc
     },
@@ -204,8 +215,8 @@ function App() {
 
       {activeTab === "today" && (
         <TodayTab
-          pieceName={pieceName}
-          setPieceName={setPieceName}
+          selectedPieceId={selectedPieceId}
+          setSelectedPieceId={setSelectedPieceId}
           goal={goal}
           setGoal={setGoal}
           activeSession={activeSession}
