@@ -67,99 +67,76 @@ export default function PiecesManager({
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.3)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-      }}
-    >
-      <div
-        style={{
-          background: "white",
-          padding: "1.5rem",
-          borderRadius: "0.75rem",
-          minWidth: "320px",
-          maxWidth: "480px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "1rem",
-          }}
-        >
-          <h2 style={{ margin: 0 }}>Manage pieces</h2>
-          <button type="button" onClick={onClose}>
+    <div className="modal-backdrop">
+      <div className="card modal-card">
+        <div className="modal-header">
+          <h2 className="modal-title">Manage pieces</h2>
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+          >
             ✕
           </button>
         </div>
 
-        <div style={{ marginBottom: "1rem" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <input
-              placeholder="composer"
-              value={composer}
-              onChange={(e) => setComposer(e.target.value)}
-            />
-            <input
-              placeholder="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
+        <div className="modal-section">
+          <label>Composer</label>
+          <input
+            className="input"
+            placeholder="composer"
+            value={composer}
+            onChange={(e) => setComposer(e.target.value)}
+          />
 
-          {error && (
-            <p style={{ color: "red", marginTop: "0.5rem" }}>{error}</p>
-          )}
+          <label>Title</label>
+          <input
+            className="input"
+            placeholder="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+
+          {error && <p className="error-text">{error}</p>}
 
           <button
             type="button"
+            className="button button-primary"
             onClick={handleAddPiece}
-            style={{ marginTop: "0.75rem" }}
           >
-            add piece
+            Add piece
           </button>
         </div>
 
-        <h3 style={{ marginTop: 0 }}>Your pieces</h3>
+        <div className="modal-section">
+          <h3 className="modal-subtitle">Your pieces</h3>
 
-        {pieces.length === 0 && (
-          <p style={{ fontStyle: "italic" }}>no pieces yet – add one above</p>
-        )}
+          {pieces.length === 0 && (
+            <p className="empty-text">
+              No pieces yet – add one above
+            </p>
+          )}
 
-        {pieces.length > 0 && (
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {pieces.map((piece) => (
-              <li
-                key={piece.id}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "0.25rem 0",
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <span>
-                  {piece.composer} — <strong>{piece.title}</strong>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleDeletePiece(piece.id)}
-                >
-                  delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+          {pieces.length > 0 && (
+            <ul className="piece-list">
+              {pieces.map((piece) => (
+                <li key={piece.id} className="piece-list-item">
+                  <span>
+                    {piece.composer} —{" "}
+                    <strong>{piece.title}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    className="button button-danger"
+                    onClick={() => handleDeletePiece(piece.id)}
+                  >
+                    Delete piece
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   )

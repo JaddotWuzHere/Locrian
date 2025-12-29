@@ -1,7 +1,9 @@
+/* base stuff */
+
 #root {
   max-width: 480px;
   margin: 0 auto;
-  padding: 1rem 1rem 5rem; 
+  padding: 1rem 1rem 5rem;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
 }
@@ -41,4 +43,407 @@ button {
 ul {
   padding-left: 1.25rem;
   text-align: left;
+}
+
+/* dark blood-rose theme */
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top, #3b0717 0%, #13030b 35%, #050308 70%),
+    radial-gradient(circle at bottom, #05060b 0%, #050308 55%, #000000 100%);
+  color: #fff5f8;
+}
+
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 72px;
+  background:
+    radial-gradient(circle at top left, rgba(190, 48, 96, 0.22), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(170, 176, 200, 0.16), transparent 55%);
+  border-radius: 16px;
+}
+
+.app-title {
+  margin: 0 0 16px;
+  font-size: 1.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(120deg, #fdf4f7, #ff4f86, #d5d7e8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* cards */
+
+.card {
+  background: linear-gradient(145deg, #080509, #16030a 45%, #0a060f 100%);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(224, 214, 232, 0.04);
+  border: 1px solid rgba(214, 80, 132, 0.7);
+}
+
+.card-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: linear-gradient(120deg, #ff4f86, #ff85b3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 6px;
+}
+
+/* form inputs */
+
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(214, 80, 132, 0.6);
+  background: linear-gradient(145deg, #13030b, #210413);
+  color: #fff5f8;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: rgba(255, 88, 140, 0.95);
+  box-shadow: 0 0 0 1px rgba(255, 104, 160, 0.75);
+}
+
+/* form buttons */
+
+.button {
+  border-radius: 999px;
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.button-primary {
+  background: linear-gradient(135deg, #6b011b, #a60029, #ff4f86);
+  color: #fff6fa;
+  font-weight: 600;
+}
+
+.button-secondary {
+  background: linear-gradient(135deg, rgba(255, 116, 164, 0.2), rgba(120, 124, 156, 0.28));
+  border: 1px solid rgba(233, 140, 184, 0.7);
+  color: #ff7aa8;
+}
+
+.button-danger {
+  background: linear-gradient(135deg, rgba(112, 0, 24, 0.5), rgba(196, 6, 46, 0.82), rgba(224, 52, 96, 0.9));
+  border: 1px solid rgba(255, 92, 122, 0.95);
+  color: #ffe6ee;
+}
+
+label {
+  font-size: 0.85rem;
+  background: linear-gradient(120deg, #f5e7ef, #f8c6d8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* timer */
+
+.timer {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: linear-gradient(120deg, #ffd7e5, #fff2f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 6px 0 10px;
+}
+
+/* bottom navigation */
+
+.bottom-nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 10px;
+  background: linear-gradient(
+    to top,
+    rgba(22, 0, 10, 0.98),
+    rgba(34, 4, 24, 0.96),
+    rgba(8, 9, 16, 0.96)
+  );
+  border-top: 1px solid rgba(224, 154, 190, 0.55);
+  backdrop-filter: blur(12px);
+}
+
+.nav-button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e4d2de;
+  padding: 6px 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.nav-button-active {
+  background: linear-gradient(120deg, #ff4f86, #ff8fb5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  border-bottom: 2px solid #b4002b;
+}
+
+/* piece manager shit */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(112, 6, 40, 0.7), rgba(10, 3, 10, 0.95)),
+    radial-gradient(circle at bottom, rgba(12, 13, 20, 0.9), rgba(0, 0, 0, 0.98));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  max-width: 420px;
+  width: 90%;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(243, 156, 192, 0.85);
+  background: linear-gradient(135deg, #140410, #251024);
+  color: #ffe0ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: linear-gradient(135deg, #77052c, #da2e62);
+  border-color: rgba(255, 180, 212, 1);
+}
+
+/* session formatting */
+
+.session-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.session-block {
+  padding: 12px 0 10px;
+  border-top: 1px solid rgba(223, 120, 170, 0.5);
+}
+
+.session-block:first-child {
+  border-top: none;
+}
+
+.session-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.session-piece {
+  flex: 1;
+  min-width: 0;
+}
+
+.session-title-line {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-style: italic;
+  background: linear-gradient(120deg, #ffe8f1, #ffd2e6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.session-composer-line {
+  font-size: 0.8rem;
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+  background: linear-gradient(120deg, #ff4f86, #ff89b3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.session-right {
+  min-width: 100px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.session-duration {
+  font-size: 0.85rem;
+  background: linear-gradient(120deg, #e9e3ee, #fff2f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+}
+
+.session-goal-line {
+  margin-top: 6px;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: linear-gradient(120deg, #ff82ae, #ffb2d0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.session-bottom {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end; 
+}
+
+.session-delete {
+  width: auto !important;
+  padding-inline: 10px;
+  padding-block: 4px;
+  font-size: 0.8rem;
+  background: linear-gradient(
+    135deg,
+    rgba(70, 10, 24, 0.75),
+    rgba(120, 16, 46, 0.75),
+    rgba(160, 32, 72, 0.78)
+  );
+  border: 1px solid rgba(200, 100, 140, 0.55);
+  color: #fbe9f0;
+}
+
+.session-bottom {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.session-delete {
+  width: auto !important;
+  padding-inline: 10px;
+  padding-block: 4px;
+  font-size: 0.8rem;
+}
+
+/* insights stuff */
+
+.insights-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.insight-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(223, 120, 170, 0.5);
+}
+
+.insight-row:first-child {
+  border-top: none;
+}
+
+.insight-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.insight-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-style: italic;
+  background: linear-gradient(120deg, #ffe8f1, #ffd2e6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.insight-composer {
+  font-size: 0.8rem;
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+  background: linear-gradient(120deg, #ff4f86, #ff89b3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.insight-right {
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.insight-rank {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: linear-gradient(120deg, #ff82ae, #ffb2d0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.insight-duration {
+  font-size: 0.85rem;
+  background: linear-gradient(120deg, #e9e3ee, #fff2f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
 }

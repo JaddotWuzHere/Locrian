@@ -210,10 +210,11 @@ function App() {
 
   // -------- JSX SHIT AHHHHH --------
   return (
-    <div style={{ paddingBottom: "60px" }}>
-      <h1>Locrian</h1>
+    <div className="app-root">
+    <div className="app-shell">
+      <h1 className="app-title">Locrian</h1>
 
-      {activeTab === "today" && (
+        {activeTab === "today" && (
         <TodayTab
           selectedPieceId={selectedPieceId}
           setSelectedPieceId={setSelectedPieceId}
@@ -249,33 +250,37 @@ function App() {
           formatHMS={formatHMS}
         />
       )}
-
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "space-around",
-          borderTop: "1px solid #ccc",
-          padding: "10px",
-          background: "white",
-        }}
-      >
-        <button onClick={() => setActiveTab("today")}>Today</button>
-        <button onClick={() => setActiveTab("history")}>History</button>
-        <button onClick={() => setActiveTab("insights")}>Insights</button>
-      </div>
-
-      {showPiecesManager && (
-        <PiecesManager
-          pieces={pieces}
-          setPieces={setPieces}
-          onClose={() => setShowPiecesManager(false)}
-        />
-      )}
     </div>
+
+    <div className="bottom-nav">
+      <button 
+        className={activeTab === "today" ? "nav-button nav-button-active": "nav-button"}
+        onClick={() => setActiveTab("today")}
+      >
+        Today
+      </button>
+      <button 
+        className={activeTab === "history" ? "nav-button nav-button-active": "nav-button"}
+        onClick={() => setActiveTab("history")}
+      >
+        History
+      </button>
+      <button 
+        className={activeTab === "insights" ? "nav-button nav-button-active": "nav-button"}
+        onClick={() => setActiveTab("insights")}
+      >
+        Insights
+      </button>
+    </div>
+
+    {showPiecesManager && (
+      <PiecesManager
+        pieces={pieces}
+        setPieces={setPieces}
+        onClose={() => setShowPiecesManager(false)}
+      />
+    )}
+  </div>
   )
 }
 

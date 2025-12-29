@@ -38,16 +38,18 @@ export default function TodayTab({
 
   return (
     <div>
-      <h2>Today</h2>
-
-      <p>total practice today: {formatHMS(totalSecondsToday)}</p>
+      <div className="card">
+        <div className="card-header">Today</div>
+        <p>Total practice today: {formatHMS(totalSecondsToday)}</p>
+      </div>
 
       {!activeSession && (
-        <div>
-          <div>
-            <label>
-              Piece:{" "}
+        <div className="card">
+          <div className="card-header">Start a session</div>
+            <div>
+              <label>Piece:{" "}</label>
               <select
+                className="input"
                 value={
                   selectedPieceId === ""
                     ? ""
@@ -60,7 +62,7 @@ export default function TodayTab({
                   )
                 }}
               >
-                <option value="">select a piece...</option>
+                <option value="">Select a piece...</option>
 
                 {pieces.map((piece) => {
                   const label = `${piece.composer} — ${piece.title}`
@@ -71,27 +73,34 @@ export default function TodayTab({
                   )
                 })}
               </select>
-            </label>
-
-            <button type="button" onClick={onManagePiecesClick}>
-              manage pieces
+            <button 
+              type="button"
+              className="button button-secondary"
+              onClick={onManagePiecesClick}
+            >
+              Manage Pieces
             </button>
           </div>
 
+          <label>Goal</label>
           <select
+            className="input"
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
           >
-            <option>technique</option>
-            <option>phrasing</option>
+            <option value="technique">Technique</option>
+            <option value="phrasing">Phrasing</option>
           </select>
 
-          <button onClick={startSession}>Start session</button>
+          <button className="button button-primary" onClick={startSession}>
+            Start session
+          </button>
         </div>
       )}
 
       {activeSession && (
-        <div>
+        <div className="card">
+          <div className="card-header">Active session</div>
           <p>
             Practicing:{" "}
             <strong>
@@ -102,49 +111,69 @@ export default function TodayTab({
             ({activeSession.goal})
           </p>
 
-          <h3>{formatHMS(elapsedSeconds)}</h3>
+          <h3 className="timer">{formatHMS(elapsedSeconds)}</h3>
 
-          <button onClick={stopSession}>Stop session</button>
+          <button className="button button-danger" onClick={stopSession}>
+            Stop session
+          </button>
         </div>
       )}
 
-      <h3>Today&apos;s Sessions</h3>
+      <div className="card">
+        <div className="card-header">Today&apos;s Sessions</div>
 
-      {sessionsToday.length === 0 && (
-        <p>why haven&apos;t you practiced yet</p>
-      )}
+        {sessionsToday.length === 0 && (
+          <p>No sessions yet</p>
+        )}
 
-      {sessionsToday.length > 0 && (
-        <ul>
-          {sessionsToday.map((session) => {
-            const piece = pieces.find(
-              (p) => p.id === session.pieceId,
-            )
+        {sessionsToday.length > 0 && (
+          <ul>
+            {sessionsToday.map((session) => {
+              const piece = pieces.find((p) => p.id === session.pieceId)
 
-            const label = piece
-              ? `${piece.composer} — ${piece.title}`
-              : "Unknown piece"
+                return (
+                  <li key={session.id} className="session-block">
+                    <div className="session-top">
+                      <div className="session-piece">
+                        <div className="session-title-line">
+                          {piece ? piece.title : "Unknown piece"}
+                        </div>
+                        <div className="session-composer-line">
+                          {piece ? piece.composer : "Unknown composer"}
+                        </div>
+                      </div>
 
-            return (
-              <li key={session.id}>
-                <strong>{label}</strong> — {session.goal} —{" "}
-                {formatHMS(session.durationSec)}{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const ok = window.confirm(
-                      "delete this session?",
-                    )
-                    if (ok) deleteSession(session.id)
-                  }}
-                >
-                  delete
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      )}
+                      <div className="session-right">
+                        <span className="session-duration">
+                          {formatHMS(session.durationSec)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="session-goal-line">
+                      {session.goal.toUpperCase()}
+                    </div>
+
+                    <div className="session-bottom">
+                      <div className="session-right">
+                        <button
+                          type="button"
+                          className="button button-danger session-delete"
+                          onClick={() => {
+                            const ok = window.confirm("delete this session?")
+                            if (ok) deleteSession(session.id)
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                )
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }
