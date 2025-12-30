@@ -171,11 +171,6 @@ function App() {
     0
   )
 
-  // -------- pieces manager open --------
-  function handleManagePiecesClick() {
-    setShowPiecesManager(true)
-  }
-
   // -------- remove sessions --------
   function deleteSession(id: number) {
     setSessions((allSessions) => allSessions.filter((s) => s.id !== id))
