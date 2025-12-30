@@ -1,3 +1,5 @@
+// src/tabs/TodayTab.tsx
+import Dropdown, { type DropdownOption } from "../components/Dropdown"
 import type { PracticeSession, Piece } from "../types"
 
 export type TodayTabProps = {
@@ -5,7 +7,7 @@ export type TodayTabProps = {
   setSelectedPieceId: (value: number | "") => void
   goal: string
   setGoal: (value: string) => void
-  activeSession: { startedAt: number, pieceId: number, goal: string } | null
+  activeSession: { startedAt: number; pieceId: number; goal: string } | null
   elapsedSeconds: number
   startSession: () => void
   stopSession: () => void
@@ -36,6 +38,19 @@ export default function TodayTab({
   const activePiece =
     activeSession && pieces.find((p) => p.id === activeSession.pieceId)
 
+  const pieceOptions: DropdownOption[] = pieces.map((piece) => ({
+    value: String(piece.id),
+    label: `${piece.composer} — ${piece.title}`,
+  }))
+
+  const goalOptions: DropdownOption[] = [
+    { value: "technique", label: "Technique" },
+    { value: "phrasing", label: "Phrasing" },
+  ]
+
+  const selectedPieceValue =
+    selectedPieceId === "" ? "" : String(selectedPieceId)
+
   return (
     <div>
       <div className="card">
@@ -46,55 +61,41 @@ export default function TodayTab({
       {!activeSession && (
         <div className="card">
           <div className="card-header">Start a session</div>
-            <div>
-              <label>Piece:{" "}</label>
-              <select
+          <div className="start-session-form">
+            <div className="form-row">
+              <label className="field-label">Piece</label>
+              <Dropdown
                 className="input"
-                value={
-                  selectedPieceId === ""
-                    ? ""
-                    : String(selectedPieceId)
-                }
-                onChange={(e) => {
-                  const value = e.target.value
-                  setSelectedPieceId(
-                    value === "" ? "" : Number(value),
-                  )
+                value={selectedPieceValue}
+                onChange={(value) => {
+                  setSelectedPieceId(value === "" ? "" : Number(value))
                 }}
+                options={pieceOptions}
+                placeholder="Select a piece..."
+              />
+              <button
+                type="button"
+                className="button button-secondary manage-pieces-button"
+                onClick={onManagePiecesClick}
               >
-                <option value="">Select a piece...</option>
+                Manage Pieces
+              </button>
+            </div>
 
-                {pieces.map((piece) => {
-                  const label = `${piece.composer} — ${piece.title}`
-                  return (
-                    <option key={piece.id} value={piece.id}>
-                      {label}
-                    </option>
-                  )
-                })}
-              </select>
-            <button 
-              type="button"
-              className="button button-secondary"
-              onClick={onManagePiecesClick}
-            >
-              Manage Pieces
+            <div className="form-row">
+              <label className="field-label">Goal</label>
+              <Dropdown
+                className="input"
+                value={goal}
+                onChange={(value) => setGoal(value)}
+                options={goalOptions}
+              />
+            </div>
+
+            <button className="button button-primary start-session-button" onClick={startSession}>
+              Start session
             </button>
           </div>
-
-          <label>Goal</label>
-          <select
-            className="input"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-          >
-            <option value="technique">Technique</option>
-            <option value="phrasing">Phrasing</option>
-          </select>
-
-          <button className="button button-primary" onClick={startSession}>
-            Start session
-          </button>
         </div>
       )}
 
@@ -122,54 +123,52 @@ export default function TodayTab({
       <div className="card">
         <div className="card-header">Today&apos;s Sessions</div>
 
-        {sessionsToday.length === 0 && (
-          <p>No sessions yet</p>
-        )}
+        {sessionsToday.length === 0 && <p>No sessions yet</p>}
 
         {sessionsToday.length > 0 && (
           <ul>
             {sessionsToday.map((session) => {
               const piece = pieces.find((p) => p.id === session.pieceId)
 
-                return (
-                  <li key={session.id} className="session-block">
-                    <div className="session-top">
-                      <div className="session-piece">
-                        <div className="session-title-line">
-                          {piece ? piece.title : "Unknown piece"}
-                        </div>
-                        <div className="session-composer-line">
-                          {piece ? piece.composer : "Unknown composer"}
-                        </div>
+              return (
+                <li key={session.id} className="session-block">
+                  <div className="session-top">
+                    <div className="session-piece">
+                      <div className="session-title-line">
+                        {piece ? piece.title : "Unknown piece"}
                       </div>
-
-                      <div className="session-right">
-                        <span className="session-duration">
-                          {formatHMS(session.durationSec)}
-                        </span>
+                      <div className="session-composer-line">
+                        {piece ? piece.composer : "Unknown composer"}
                       </div>
                     </div>
 
-                    <div className="session-goal-line">
-                      {session.goal.toUpperCase()}
+                    <div className="session-right">
+                      <span className="session-duration">
+                        {formatHMS(session.durationSec)}
+                      </span>
                     </div>
+                  </div>
 
-                    <div className="session-bottom">
-                      <div className="session-right">
-                        <button
-                          type="button"
-                          className="button button-danger session-delete"
-                          onClick={() => {
-                            const ok = window.confirm("delete this session?")
-                            if (ok) deleteSession(session.id)
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
+                  <div className="session-goal-line">
+                    {session.goal.toUpperCase()}
+                  </div>
+
+                  <div className="session-bottom">
+                    <div className="session-right">
+                      <button
+                        type="button"
+                        className="button button-danger session-delete"
+                        onClick={() => {
+                          const ok = window.confirm("delete this session?")
+                          if (ok) deleteSession(session.id)
+                        }}
+                      >
+                        Delete
+                      </button>
                     </div>
-                  </li>
-                )
+                  </div>
+                </li>
+              )
             })}
           </ul>
         )}
