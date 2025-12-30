@@ -99,26 +99,35 @@ export default function TodayTab({
         </div>
       )}
 
-      {activeSession && (
-        <div className="card">
-          <div className="card-header">Active session</div>
-          <p>
-            Practicing:{" "}
-            <strong>
-              {activePiece
-                ? `${activePiece.composer} — ${activePiece.title}`
-                : "Unknown piece"}
-            </strong>{" "}
-            ({activeSession.goal})
-          </p>
+        {activeSession && (
+          <div className="card">
+            <div className="card-header">Active session</div>
+            <div className="session-label">Practicing:</div>
 
-          <h3 className="timer">{formatHMS(elapsedSeconds)}</h3>
+            <div className="session-block active-session-block">
+              <div className="session-top">
+                <div className="session-piece">
+                  <div className="session-title-line">
+                    {activePiece ? activePiece.title : "Unknown piece"}
+                  </div>
+                  <div className="session-composer-line">
+                    {activePiece ? activePiece.composer : "Unknown composer"}
+                  </div>
+                </div>
+              </div>
 
-          <button className="button button-danger" onClick={stopSession}>
-            Stop session
-          </button>
-        </div>
-      )}
+              <div className="session-goal-line">
+                {activeSession.goal.toUpperCase()}
+              </div>
+            </div>
+
+            <h3 className="timer">{formatHMS(elapsedSeconds)}</h3>
+
+            <button className="button button-danger" onClick={stopSession}>
+              Stop session
+            </button>
+          </div>
+        )}
 
       <div className="card">
         <div className="card-header">Today&apos;s Sessions</div>

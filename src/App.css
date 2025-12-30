@@ -276,6 +276,12 @@ label {
   margin: 8px 0 0;
 }
 
+.session-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}
+
 .session-block {
   padding: 12px 0 10px;
   border-top: 1px solid rgba(223, 120, 170, 0.5);
@@ -488,6 +494,7 @@ label {
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
   z-index: 20;
   backdrop-filter: blur(10px);
+  margin-top: 0 !important;
 }
 
 .dropdown-option {
@@ -543,5 +550,5 @@ button:hover,
 .button:hover,
 .dropdown-trigger:hover {
   outline: 1px solid rgba(223, 120, 170, 0.35);  /* soft + semi-transparent */
-  outline-offset: 1px;                           /* tighter gap */
+  outline-offset: 2px;                           /* tighter gap */
 }

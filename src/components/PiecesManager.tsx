@@ -118,20 +118,31 @@ export default function PiecesManager({
           )}
 
           {pieces.length > 0 && (
-            <ul className="piece-list">
+            <ul className="session-list">
               {pieces.map((piece) => (
-                <li key={piece.id} className="piece-list-item">
-                  <span>
-                    {piece.composer} —{" "}
-                    <strong>{piece.title}</strong>
-                  </span>
-                  <button
-                    type="button"
-                    className="button button-danger"
-                    onClick={() => handleDeletePiece(piece.id)}
-                  >
-                    Delete piece
-                  </button>
+                <li key={piece.id} className="session-block">
+                  <div className="session-top">
+                    <div className="session-piece">
+                      <div className="session-title-line">
+                        {piece.title}
+                      </div>
+                      <div className="session-composer-line">
+                        {piece.composer}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="session-bottom">
+                    <div className="session-right">
+                      <button
+                        type="button"
+                        className="button button-danger session-delete"
+                        onClick={() => handleDeletePiece(piece.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
