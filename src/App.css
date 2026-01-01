@@ -53,17 +53,40 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
-  background:
-    radial-gradient(circle at top, #3b0717 0%, #13030b 35%, #050308 70%),
-    radial-gradient(circle at bottom, #05060b 0%, #050308 55%, #000000 100%);
+
   color: #fff5f8;
+  background-color: #050308;
+
+  background-image:
+    radial-gradient(
+      circle at center,
+
+      rgba(5, 3, 8, 0) 45%,
+      rgba(5, 3, 8, 0.4) 60%,
+      rgba(5, 3, 8, 0.75) 75%,
+      #000000 90%
+    ),
+    url("/roses_bg.png");
+
+
+  background-repeat: no-repeat, no-repeat;
+  background-position: top center, top center;
+  background-attachment: fixed, fixed;
+
+  background-size:
+    150% 150%,
+    auto 100vh;
 }
+
+
 
 .app-root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
+
 
 .app-shell {
   max-width: 480px;
@@ -551,4 +574,4 @@ button:hover,
 .dropdown-trigger:hover {
   outline: 1px solid rgba(223, 120, 170, 0.35);  /* soft + semi-transparent */
   outline-offset: 2px;                           /* tighter gap */
-}
+} 
